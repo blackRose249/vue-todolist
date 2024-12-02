@@ -60,7 +60,7 @@
         "StatusCode": 200
       }
     ],
-    "EndpointName": "WebApplication1"
+    "EndpointName": "GetById"
   },
   {
     "ContainingType": "WebApplication1.Controllers.TodoController",
@@ -98,6 +98,32 @@
       }
     ],
     "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebApplication1.Controllers.TodoController",
+    "Method": "GetByText",
+    "RelativePath": "api/Todo/search",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "text",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[Todo.Models.TodoList, WebApplication1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
   },
   {
     "ContainingType": "WebApplication1.Controllers.WeatherForecastController",

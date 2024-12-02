@@ -4,7 +4,7 @@
             <v-col cols="12" sm="8">
                 <v-card>
                     <v-card-title>
-                        <v-text-field v-model="search" label="search" clearable outlined/>
+                        <v-text-field v-model="search" label="search" clearable outlined @keyup.enter="searchTodoList()"/>
                     </v-card-title>
                     <v-divider></v-divider>
                     <v-card-title>
@@ -15,9 +15,9 @@
                     </v-card-title>
                     <v-divider></v-divider>
                     <v-list>
-                        <v-list-item v-for="(task, index) in filteredTasks" :key="index">
+                        <v-list-item v-for="(task, index) in tasks" :key="index">
                             <v-list-item-content>
-                                <v-text-field v-if="task.isEditing" v-model="task.text" outlined dense @blur="saveTask2(index)" @keyup.enter="saveTask2(index)"/>
+                                <v-text-field v-if="task.isEditing" v-model="task.text" outlined dense/>
                                 <v-list-item-title v-else>
                                     {{task.text}}
                                 </v-list-item-title>
@@ -25,7 +25,7 @@
                             <v-list-item-action>
                                 <v-btn color="blue" @click="editTask(index)">
                                     <text v-if="!task.isEditing" >edit</text>
-                                    <text v-else>save</text>
+                                    <text v-else @click="saveTask2(index)">save</text>
                                 </v-btn>
                                 <v-btn color="red" @click="removeTask2(index)">
                                     <text>delete</text>
@@ -43,6 +43,7 @@
 
 <script>
 import axios from 'axios';
+// import { search } from 'core-js/fn/symbol';
 import { v4 as uuidv4 } from 'uuid';
 export default {
     name:'TodoList',
@@ -54,9 +55,6 @@ export default {
         };
     },
     computed: {
-        filteredTasks() {
-            return this.tasks.filter((task) => task.text.includes(this.search))
-        },
     },
     mounted() {
         this.getTodoList2()
@@ -130,7 +128,20 @@ export default {
         async getTodoList2() {
           try {
             const response = await axios.get("https://localhost:7034/api/Todo");
-            console.log("get data", response)
+            console.log("get data", response);
+            this.tasks = response.data;
+          } catch (error) {
+            console.error("Failed to fetch tasks:", error);
+          }
+        },
+        async searchTodoList() {
+          if(this.search == '') {
+              this.getTodoList2();
+              return ;
+          }
+          try {
+            const response = await axios.get(`https://localhost:7034/api/todo/search?text=${this.search}`);
+            console.log("search data", response);
             this.tasks = response.data;
           } catch (error) {
             console.error("Failed to fetch tasks:", error);
@@ -143,7 +154,11 @@ export default {
               text: this.newTask,
               IsEditing: false,
             }
+            if(item.text === ''){
+              return ;
+            }
             const response = await axios.post('https://localhost:7034/api/Todo', item);
+            console.log("add data", response);
             this.tasks.push(response.data);
             this.newTask = '';
           } catch (error) {
@@ -151,10 +166,11 @@ export default {
           }
         },
         async saveTask2(index) {
+          this.tasks[index].IsEditing = false;
           try {
             const updatedTask = this.tasks[index];
             const response = await axios.put(`https://localhost:7034/api/Todo/${updatedTask.id}`, updatedTask);
-            this.tasks[index] = response.data;
+            console.log("save data", response);
           } catch (error) {
             console.error('Failed to save task:', error);
           }
@@ -162,7 +178,8 @@ export default {
         async removeTask2(index) {
           try {
             const taskId = this.tasks[index].id;
-            await axios.delete(`https://localhost:7034/api/Todo/${taskId}`);
+            const response = await axios.delete(`https://localhost:7034/api/Todo/${taskId}`);
+            console.log("remove data", response);
             this.tasks.splice(index, 1);
           } catch (error) {
             console.error('Failed to delete task:', error);

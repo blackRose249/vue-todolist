@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System.Collections.Generic;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using Todo.Models;
@@ -18,7 +19,7 @@ namespace WebApplication1.Controllers
         [HttpGet]
         public ActionResult<List<TodoList>> GetAll() => ListData;
 
-        [HttpGet("{id}", Name = "WebApplication1")]
+        [HttpGet("{id}", Name = "GetById")]
         public ActionResult<TodoList> GetById(string id)
         { 
             var item = ListData.Find(i  => i.Id == id);
@@ -26,12 +27,27 @@ namespace WebApplication1.Controllers
                 return NotFound();
             return item;
         }
+
+        [HttpGet("search")]
+        public ActionResult<List<TodoList>> GetByText([FromQuery] string text)
+        {
+            if (string.IsNullOrEmpty(text))
+            {
+                return BadRequest("Search text is required.");
+            }
+            var searchList = ListData.Where(i => i.text.Contains(text, StringComparison.OrdinalIgnoreCase)).ToList();
+            if (searchList.Count == 0)
+            {
+                return NotFound();
+            }
+            return Ok(searchList);
+        }
         // createData
         [HttpPost]
         public IActionResult Create(TodoList item) 
         {
             ListData.Add(item);
-            return CreatedAtRoute("Todo", item);
+            return CreatedAtRoute("GetById", new { id = item.Id }, item);
         }
         // updateData
         [HttpPut("{id}")]
