@@ -1,3 +1,9 @@
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using WebApplication1.Contexts;
+using WebApplication1.Repository;
+using WebApplication1.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -17,6 +23,15 @@ builder.Services.AddCors(options =>
               .AllowAnyMethod();
     });
 });
+
+// dbConnect
+builder.Services.AddDbContext<TodoLIstDbContext>(options =>
+{
+    options.UseMySql("server=localhost;port=3306;database=TodoList_Root;uid=root;pwd=011007;CharSet=utf8",
+    new MySqlServerVersion("5.7.44"));
+});
+builder.Services.AddScoped<ITodoRepository, TodoRepository>();
+builder.Services.AddScoped<ITodoListService, TodoListService>();
 
 var app = builder.Build();
 
