@@ -23,3 +23,5 @@ pnpm-debug.log*
 *.sw?
 WebApplication1/obj
 WebApplication1/bin
+WebApplication1/WebApplication1.csproj.user
+WebApplication1/WebApplication1.csproj
