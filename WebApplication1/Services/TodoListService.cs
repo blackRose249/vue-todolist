@@ -9,7 +9,8 @@ namespace WebApplication1.Services
         // Use DAO
         public ITodoRepository TodoRepository;
 
-        public TodoListService(ITodoRepository todoRepository) { 
+        public TodoListService(ITodoRepository todoRepository)
+        {
             TodoRepository = todoRepository;
         }
 
@@ -18,16 +19,20 @@ namespace WebApplication1.Services
             return TodoRepository.AddTodo(todoList);
         }
 
-        public bool DeleteTodo(string id) {
+        public bool DeleteTodo(string id)
+        {
             return TodoRepository.DeleteTodo(id);
         }
-        public bool UpdateTodo(TodoList item) { 
+        public bool UpdateTodo(TodoList item)
+        {
             return TodoRepository.UpdateTodo(item);
         }
-        public List<TodoList> GetTodoList() { 
+        public List<TodoList> GetTodoList()
+        {
             return TodoRepository.GetTodoList();
         }
-        public List<TodoList> GetSearchList(string text) { 
+        public List<TodoList> GetSearchList(string text)
+        {
             return TodoRepository.GetSearchList(text);
         }
     }

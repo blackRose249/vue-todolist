@@ -43,11 +43,15 @@ builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 // 2,reg autofac's service containers 
 builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder =>
 {
-    // Type：SingleInstance()、InstancePerLifetimeScope()、InstancePerDependency()
-    //containerBuilder.RegisterType<TodoListService>().As<ITodoListService>().SingleInstance();
-    //containerBuilder.RegisterType<TodoRepository>().As<ITodoRepository>().SingleInstance();
-    containerBuilder.RegisterType<TodoListService>().As<ITodoListService>().EnableInterfaceInterceptors().InterceptedBy(typeof(MyInterceptor));
-    containerBuilder.RegisterType<TodoRepository>().As<ITodoRepository>().EnableInterfaceInterceptors().InterceptedBy(typeof(MyInterceptor));
+    // 1.InstancePerDependency() 默?是瞬?生命周期：?次?求都会?建一个新的?例
+    containerBuilder.RegisterType<TodoListService>().As<ITodoListService>().InstancePerDependency().EnableInterfaceInterceptors().InterceptedBy(typeof(MyInterceptor));
+    containerBuilder.RegisterType<TodoRepository>().As<ITodoRepository>().InstancePerDependency().EnableInterfaceInterceptors().InterceptedBy(typeof(MyInterceptor));
+    // 2.SingleInstance() ?例生命周期:容器会?建一个唯一的?例，并在整个?用程序生命周期内共享??例
+    //containerBuilder.RegisterType<TodoListService>().As<ITodoListService>().SingleInstance().EnableInterfaceInterceptors().InterceptedBy(typeof(MyInterceptor));
+    //containerBuilder.RegisterType<TodoRepository>().As<ITodoRepository>().SingleInstance().EnableInterfaceInterceptors().InterceptedBy(typeof(MyInterceptor));
+    // 3.InstancePerDependency() 作用域生命周期:?个?求或?个操作?元的生命周期中
+    //containerBuilder.RegisterType<TodoListService>().As<ITodoListService>().InstancePerLifetimeScope().EnableInterfaceInterceptors().InterceptedBy(typeof(MyInterceptor));
+    //containerBuilder.RegisterType<TodoRepository>().As<ITodoRepository>().InstancePerLifetimeScope().EnableInterfaceInterceptors().InterceptedBy(typeof(MyInterceptor));
     // reg interceptor
     containerBuilder.RegisterType<MyInterceptor>();
 });
