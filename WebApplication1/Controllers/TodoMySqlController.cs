@@ -4,7 +4,7 @@ using WebApplication1.Services;
 
 namespace WebApplication1.Controllers
 {
-    [Route("api2/[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     // 1, Controller
     public class TodoMySqlController : ControllerBase

@@ -6,6 +6,7 @@ namespace WebApplication1.Services
     // 2, Service
     public class TodoListService : ITodoListService
     {
+        // Constructor Injection
         // Use DAO
         public ITodoRepository TodoRepository;
 
